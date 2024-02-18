@@ -13,7 +13,6 @@ using namespace std;
 
 // the process of replacing template parameters by concrete types is called instantiation.
 
-void main_2();
 
 int main() {
     int i = 42;
@@ -27,15 +26,42 @@ int main() {
     string s1 = "mathematics";
     string s2 = "math";
     cout << "max(s1, s2): " << ::max(s1, s2) << '\n';
+
+    // 1.
+    // When declaring call parameters by reference, even trivial conversions
+    // do not apply to type deduction. Two arguments declared with the same template parameter T
+    // must match exactly.
+
+    // 2.
+    // When declaring call parameters by value, only trivial conversions that decay are supported.
+    // Qualifications with const or volatile are ignored, references convert to the referenced type,
+    // and raw arrays or functions convert to the corresponding pointer type.
+    // For two arguments declared with the same template parameter T the decayed types must match.
+
+    int const c = 42;
+    ::max(i, c); // T is deduced as int
+    ::max(c, c); // T is deduced as int
+    int const &ir = i;
+    ::max(i, ir); // T is deduced as int
+    int arr[4];
+    ::max(&i, arr); // T is deduced as int*
+
+//    ::max(4, 7.2); // ERROR: T can be deduced as int or double
+    // in order to solve this
+    // max(static_cast<double>(4), 7.2) or max<double>(4, 7.2) or specify that parameters can be
+    // different types
 }
 
-// 1.
-// When declaring call parameters by reference, even trivial conversions
-// do not apply to type deduction. Two arguments declared with the same template parameter T
-// must match exactly.
+// type deduction for default arguments
+//template <typename T>
+//void f(T = "");
 
-// 2.
-// When declaring call parameters by value, only trivial conversions that decay are supported.
-// Qualifications with const or volatile are ignored, references convert to the referenced type,
-// and raw arrays or functions convert to the corresponding pointer type.
-// For two arguments declared with the same template parameter T the decayed types must match.
+// f(1); OK: T is deduced to be int
+// f(): ERROR: cannot deduce T. You have to declare a default argument for template parameter
+
+template <typename T = std::string>
+void f(T = "") {
+
+}
+
+// f() OK

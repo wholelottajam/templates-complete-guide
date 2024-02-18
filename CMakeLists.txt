@@ -7,4 +7,6 @@ include_directories(part1/chapter1)
 
 add_executable(templates_complete
         part1/chapter1/max1.h
-        part1/chapter1/max1.cpp)
+        part1/chapter1/max1.cpp
+        part1/chapter1/maxauto.h
+        part1/chapter1/maxdecltype.h)
